@@ -29,9 +29,13 @@ def rectangle(perimeter,area):
         >>> rectangle(11, 4)
         False
     """
-    #- YOUR CODE STARTS HERE
-    pass
-
+    import math
+    for w in range(1, perimeter // 2 + 1):
+        if (perimeter - 2 * w) % 2 == 0:
+            h = (perimeter - 2 * w) // 2
+            if h > 0 and w * h == area:
+                return max(w, h)
+    return False
 
 def to_decimal(oct_num):
     """
@@ -44,10 +48,14 @@ def to_decimal(oct_num):
         >>> to_decimal(420) 
         272
     """
-    #- YOUR CODE STARTS HERE
-    pass
-
-
+    decimal_val = 0
+    power = 0
+    while oct_num > 0:
+        digit = oct_num % 10
+        decimal_val += digit * (8 ** power)
+        oct_num = oct_num // 10
+        power += 1
+    return decimal_val
 
 def has_hoagie(num):
     """
@@ -62,9 +70,21 @@ def has_hoagie(num):
         >>> has_hoagie(6945) 
         False
     """
-    #- YOUR CODE STARTS HERE
-    pass
+    if num < 0:
+        num = -num
+    
+    if num < 100:
+        return False
 
+    while num >= 100:
+        d1 = num % 10
+        d2 = (num // 10) % 10
+        d3 = (num // 100) % 10
+        if d1 == d3:
+            return True
+        num = num // 10
+        
+    return False
 
 def is_identical(num_1, num_2):
     """
@@ -77,9 +97,12 @@ def is_identical(num_1, num_2):
         >>> is_identical(2023, 20) 
         False
     """
-    #- YOUR CODE STARTS HERE
-    pass
+    s1 = str(num_1)
+    s2 = str(num_2)
+    comp1 = ''.join(s1[i] for i in range(len(s1)) if i == 0 or s1[i] != s1[i - 1])
+    comp2 = ''.join(s2[i] for i in range(len(s2)) if i == 0 or s2[i] != s2[i - 1])
 
+    return comp1 == comp2
 
 def hailstone(num):
     """
@@ -94,10 +117,11 @@ def hailstone(num):
         >>> hailstone(19)
         [19, 58, 29, 88, 44, 22, 11, 34, 17, 52, 26, 13, 40, 20, 10, 5, 16, 8, 4, 2, 1]
     """
-    #- YOUR CODE STARTS HERE
-    pass
-
-
+    seq = [num]
+    while num != 1:
+        num = (num // 2) * (1 - num % 2) + (3 * num + 1) * (num % 2)
+        seq.append(num)
+    return seq
 
 def overloaded_add(d, key, value):
     """
@@ -108,9 +132,13 @@ def overloaded_add(d, key, value):
         >>> d == {"Alice": ["Engineer", "Sales"], "Bob": "Manager"}
         True
     """
-    #- YOUR CODE STARTS HERE
-    pass
-
+    if key not in d:
+        d[key] = value
+    else:
+        if isinstance(d[key], list):
+            d[key].append(value)
+        else:
+            d[key] = [d[key], value]
 
 def by_department(d):
     """
@@ -125,9 +153,17 @@ def by_department(d):
         >>> by_department(employees)
         {'Sales': [{'emp_id': 1, 'name': 'John Doe', 'position': 'Manager'}], 'Finance': [{'emp_id': 2, 'name': 'Sara Miller', 'position': 'Budget Advisor'}, {'emp_id': 4, 'name': 'Bob Johnson', 'position': 'Analyst'}], 'Engineering': [{'emp_id': 3, 'name': 'Jane Smith', 'position': 'Engineer'}, {'emp_id': 5, 'name': 'Clark Wayne', 'position': 'Senior Developer'}]}
     """
-    #- YOUR CODE STARTS HERE
-    pass
-
+    result = {}
+    for emp_id, info in d.items():
+        dept = info['department']
+        emp_dict = {
+            'emp_id': emp_id,
+            'name': info['name'],
+            'position': info['position']}
+        if dept not in result:
+            result[dept] = []
+        result[dept].append(emp_dict)
+    return result
 
 def successors(file_name):
     """
@@ -146,11 +182,30 @@ def successors(file_name):
     """
     file_path = get_path(file_name)
     with open(file_path, 'r') as file:   
-        contents = file.read()  # You might change .read() for .readlines() if it suits your implementation better
-    # --- YOU CODE STARTS HERE
+        contents = file.read() 
+    tokens = []
+    current_word = ""
+    for char in contents:
+        if char.isalnum():
+            current_word += char
+        else:
+            if current_word != "":
+                tokens.append(current_word)
+                current_word = ""
+            if not char.isspace():
+                tokens.append(char)         
+    if current_word != "":
+        tokens.append(current_word)
+    succ_dict = {}
+    prev = "."
+    for token in tokens:
+        if prev not in succ_dict:
+            succ_dict[prev] = []
+        if token not in succ_dict[prev]:
+            succ_dict[prev].append(token)
+        prev = token
 
-
-
+    return succ_dict
 
 def addToTrie(trie, word):
     """
@@ -165,10 +220,12 @@ def addToTrie(trie, word):
         >>> trie_dict
         {'a': {'word': True, 'p': {'p': {'l': {'e': {'word': True}}}}, 'i': {'word': True}, 'r': {'t': {'word': True}}}, 'm': {'o': {'o': {'n': {'word': True}}}}}
     """
-    #- YOUR CODE STARTS HERE
-    pass
-
-
+    curr = trie
+    for char in word:
+        if char not in curr:
+            curr[char] = {}
+        curr = curr[char]
+    curr['word'] = True
 
 def createDictionaryTrie(file_name):
     """        
@@ -180,10 +237,12 @@ def createDictionaryTrie(file_name):
     """
     file_path = get_path(file_name)
     with open(file_path, 'r') as file:   
-        contents = file.read()  # You might change .read() for .readlines() if it suits your implementation better 
-    #- YOUR CODE STARTS HERE
-
-
+        contents = file.read()  
+    trie = {}
+    words = contents.split()
+    for word in words:
+        addToTrie(trie, word.lower())
+    return trie
 
 def wordExists(trie, word):
     """
@@ -201,19 +260,20 @@ def wordExists(trie, word):
         >>> wordExists(trie_dict, 'tt')
         False
     """
-    #- YOUR CODE STARTS HERE
-    pass
+    curr = trie
+    for char in word:
+        if char not in curr:
+            return False
+        curr = curr[char]
+    return curr.get('word', False)
 
 
 
 
 def run_tests():
     import doctest
-    # Run start tests in all docstrings
-    # doctest.testmod(verbose=True)
-    
-    # Run start tests per function - Uncomment the next line to run doctest by function. Replace rectangle with the name of the function you want to test
-    # doctest.run_docstring_examples(rectangle, globals(), name='HW1',verbose=True)   
+    doctest.testmod(verbose=True)
+    doctest.run_docstring_examples(rectangle, globals(), name='HW1',verbose=True)   
 
 if __name__ == "__main__":
     run_tests()
