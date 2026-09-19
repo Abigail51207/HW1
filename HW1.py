@@ -97,12 +97,21 @@ def is_identical(num_1, num_2):
         >>> is_identical(2023, 20) 
         False
     """
-    s1 = str(num_1)
-    s2 = str(num_2)
-    comp1 = ''.join(s1[i] for i in range(len(s1)) if i == 0 or s1[i] != s1[i - 1])
-    comp2 = ''.join(s2[i] for i in range(len(s2)) if i == 0 or s2[i] != s2[i - 1])
+    def compress(n):
+        res = 0
+        place = 1
+        last_digit = -1
+        while n > 0:
+            digit = n % 10
+            if digit != last_digit:
+                res += digit * place
+                place *= 10
+                last_digit = digit
+            n = n // 10
+        return res
 
-    return comp1 == comp2
+    return compress(num_1) == compress(num_2)
+
 
 def hailstone(num):
     """
